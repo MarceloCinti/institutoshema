@@ -70,7 +70,7 @@ export default async function PedidosAdmin({ searchParams }: { searchParams: Pro
                   <span className={`badge ${ORDER_STATUS[o.status].className}`}>{ORDER_STATUS[o.status].label}</span>
                   {o.admin_note && <span className="block text-xs text-gray-500">{o.admin_note}</span>}
                 </td>
-                <td className="min-w-[220px]">
+                <td className="min-w-[170px]">
                   {o.receipt_path && (
                     <a href={`/admin/pedidos/${o.id}/comprobante`} target="_blank" className="mb-2 block text-gold-700 hover:underline">
                       Ver comprobante
@@ -85,7 +85,7 @@ export default async function PedidosAdmin({ searchParams }: { searchParams: Pro
                         </SubmitButton>
                       </form>
                       {o.status !== "rejected" && (
-                        <form action={rejectOrder} className="flex gap-1">
+                        <form action={rejectOrder} className="flex flex-col items-start gap-1">
                           <input type="hidden" name="id" value={o.id} />
                           <input name="note" className="input !py-1 text-xs" placeholder="Motivo" />
                           <SubmitButton className="btn-danger !px-2 !py-1 text-xs">Rechazar</SubmitButton>

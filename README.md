@@ -29,7 +29,7 @@ Todo el sitio está en español (Paraguay), montos en guaraníes y horarios en h
 ### 1. Supabase
 
 1. Crear un proyecto en <https://supabase.com> (región São Paulo, la más cercana).
-2. **SQL Editor → New query**: pegar y ejecutar `supabase/migrations/0001_init.sql`.
+2. **SQL Editor → New query**: pegar y ejecutar `supabase/migrations/20261010000000_init.sql`.
 3. (Opcional) ejecutar `supabase/seed.sql` para cargar los dos libros y un curso de ejemplo (quedan como borrador).
 4. **Authentication → URL Configuration**:
    - Site URL: `https://tu-dominio.com.py`
@@ -56,6 +56,33 @@ npm install
 npm run dev      # http://localhost:3000
 npm run build    # compilación de producción
 ```
+
+### Probar todo en tu computadora (sin cuenta de Supabase)
+
+Requisitos: [Node.js 20+](https://nodejs.org) y [Docker Desktop](https://www.docker.com/products/docker-desktop/) abierto.
+
+```bash
+npm install
+npm run db:start      # levanta Supabase local y aplica la base + datos de ejemplo
+```
+
+Al terminar, el comando muestra `API URL`, `anon key` y `service_role key`. Crear `.env.local` con:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon key>
+SUPABASE_SERVICE_ROLE_KEY=<service_role key>
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+Luego `npm run dev` y abrir <http://localhost:3000>. Registrarse en el sitio y, en Supabase Studio
+(<http://127.0.0.1:54323> → SQL Editor), convertir esa cuenta en administrador:
+
+```sql
+update public.profiles set role = 'admin' where email = 'tu@correo.com';
+```
+
+Para apagar: `npm run db:stop`. Para borrar todo y empezar de cero: `npm run db:reset`.
 
 ### 4. Primer administrador
 
