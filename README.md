@@ -29,7 +29,7 @@ Todo el sitio está en español (Paraguay), montos en guaraníes y horarios en h
 ### 1. Supabase
 
 1. Crear un proyecto en <https://supabase.com> (región São Paulo, la más cercana).
-2. **SQL Editor → New query**: pegar y ejecutar `supabase/migrations/20261010000000_init.sql`.
+2. **SQL Editor → New query**: pegar y ejecutar, en orden, `supabase/migrations/20261010000000_init.sql` y `supabase/migrations/20261010180045_hardening.sql` (o usar `supabase db push` con la CLI).
 3. (Opcional) ejecutar `supabase/seed.sql` para cargar los dos libros y un curso de ejemplo (quedan como borrador).
 4. **Authentication → URL Configuration**:
    - Site URL: `https://tu-dominio.com.py`
