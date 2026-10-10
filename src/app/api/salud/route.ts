@@ -9,6 +9,17 @@ export async function GET() {
   const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   const service = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+  let anonKey: "ok" | "falta" | "invalida" | "error" = anon ? "error" : "falta";
+  if (url && anon) {
+    try {
+      const pub = createClient(url, anon, { auth: { persistSession: false, autoRefreshToken: false } });
+      const { error } = await pub.from("books").select("id", { head: true, count: "exact" });
+      anonKey = error ? "invalida" : "ok";
+    } catch {
+      anonKey = "error";
+    }
+  }
+
   let serviceRole: "ok" | "falta" | "invalida" | "error" = service ? "error" : "falta";
   if (url && service) {
     try {
@@ -22,12 +33,12 @@ export async function GET() {
   }
 
   const status = {
-    NEXT_PUBLIC_SUPABASE_URL: Boolean(url),
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: Boolean(anon),
+    NEXT_PUBLIC_SUPABASE_URL: !url ? "falta" : /^https:\/\/[a-z0-9]+\.supabase\.co\/?$/.test(url) ? "ok" : "formato invalido",
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: anonKey,
     SUPABASE_SERVICE_ROLE_KEY: serviceRole,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL ?? null,
     PAGOPAR: Boolean(process.env.PAGOPAR_PUBLIC_KEY && process.env.PAGOPAR_PRIVATE_KEY),
   };
-  const ok = status.NEXT_PUBLIC_SUPABASE_URL && status.NEXT_PUBLIC_SUPABASE_ANON_KEY && serviceRole === "ok";
+  const ok = Boolean(url) && anonKey === "ok" && serviceRole === "ok";
   return NextResponse.json({ ok, ...status }, { status: ok ? 200 : 503, headers: { "cache-control": "no-store" } });
 }
