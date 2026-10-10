@@ -2,6 +2,8 @@
 
 Escuela bíblica online de la **Congregación Shema Israel (Paraguay)** — Pastor presidente **Félix Guerrero**.
 
+Sitio en producción: <https://institutoshema.vercel.app> (Vercel publica automáticamente la rama `main`).
+
 - Venta de **libros digitales** (PDF/EPUB con descarga privada para compradores).
 - Venta de **cursos online** con módulos, clases grabadas, en YouTube o en vivo.
 - **Registro de asistencia** por clase:
