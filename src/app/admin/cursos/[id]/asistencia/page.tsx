@@ -5,6 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { getStudentCourseState } from "@/lib/academic";
 import { setAttendance } from "../../../actions";
 import type { Course } from "@/lib/types";
+import { requireAdmin } from "@/lib/auth";
 
 export const metadata = { title: "Asistencia" };
 export const dynamic = "force-dynamic";
@@ -12,6 +13,7 @@ export const dynamic = "force-dynamic";
 const METHOD: Record<string, string> = { video: "Video", codigo: "Código en vivo", manual: "Manual" };
 
 export default async function AsistenciaCurso({ params }: { params: Promise<{ id: string }> }) {
+  await requireAdmin();
   const { id } = await params;
   const db = createAdminClient();
   const { data: course } = await db.from("courses").select("*").eq("id", id).maybeSingle<Course>();

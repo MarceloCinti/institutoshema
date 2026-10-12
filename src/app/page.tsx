@@ -61,24 +61,24 @@ export default async function Home() {
       </section>
 
       <section className="container-page py-6">
-        <div className="flex items-end justify-between">
+        <div className="flex items-end justify-between gap-4">
           <h2 className="text-2xl font-bold">Cursos</h2>
-          <Link href="/cursos" className="text-sm font-semibold text-gold-700 hover:underline">Ver todos →</Link>
+          <Link href="/cursos" className="shrink-0 whitespace-nowrap text-sm font-semibold text-gold-700 hover:underline">Ver todos →</Link>
         </div>
         <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {(courses as Course[] | null)?.map((c) => <CourseCard key={c.id} course={c} />)}
-          {!courses?.length && <p className="text-gray-500">Muy pronto publicaremos nuevos cursos.</p>}
+          {!courses?.length && <p className="col-span-full text-gray-500">Muy pronto publicaremos nuevos cursos.</p>}
         </div>
       </section>
 
       <section className="container-page py-10">
-        <div className="flex items-end justify-between">
+        <div className="flex items-end justify-between gap-4">
           <h2 className="text-2xl font-bold">Libros del Pastor Félix Guerrero</h2>
-          <Link href="/libros" className="text-sm font-semibold text-gold-700 hover:underline">Ver todos →</Link>
+          <Link href="/libros" className="shrink-0 whitespace-nowrap text-sm font-semibold text-gold-700 hover:underline">Ver todos →</Link>
         </div>
         <div className="mt-6 grid grid-cols-2 gap-6 lg:grid-cols-4">
           {(books as Book[] | null)?.map((b) => <BookCard key={b.id} book={b} />)}
-          {!books?.length && <p className="text-gray-500">Muy pronto.</p>}
+          {!books?.length && <p className="col-span-full text-gray-500">Muy pronto.</p>}
         </div>
       </section>
     </>

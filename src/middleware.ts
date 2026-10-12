@@ -22,6 +22,8 @@ export async function middleware(request: NextRequest) {
 
   let response = NextResponse.next({ request });
   let user = null;
+  let isAdmin = false;
+  const path = request.nextUrl.pathname;
   try {
     const supabase = createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       cookies: {
@@ -38,6 +40,11 @@ export async function middleware(request: NextRequest) {
     ({
       data: { user },
     } = await supabase.auth.getUser());
+    // Segunda barrera para /admin (cada página también llama a requireAdmin()).
+    if (user && path.startsWith("/admin")) {
+      const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+      isAdmin = profile?.role === "admin";
+    }
   } catch (e) {
     console.error("middleware supabase", e);
     return configError(
@@ -46,11 +53,17 @@ export async function middleware(request: NextRequest) {
     );
   }
 
-  const path = request.nextUrl.pathname;
   if (!user && (path.startsWith("/panel") || path.startsWith("/admin") || path.startsWith("/comprar"))) {
     const url = request.nextUrl.clone();
     url.pathname = "/ingresar";
+    url.search = "";
     url.searchParams.set("next", path);
+    return NextResponse.redirect(url);
+  }
+  if (user && path.startsWith("/admin") && !isAdmin) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/panel";
+    url.search = "";
     return NextResponse.redirect(url);
   }
 

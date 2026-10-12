@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fulfillOrder } from "@/lib/orders";
-import { consultarPedido, tokenValido } from "@/lib/pagopar";
+import { consultarPedido, pagoparEnabled, tokenValido } from "@/lib/pagopar";
 
 /**
  * Notificación de Pagopar. Configurar en el panel de Pagopar como "URL de respuesta (webhook)":
@@ -9,10 +9,11 @@ import { consultarPedido, tokenValido } from "@/lib/pagopar";
  * Pagopar espera que se le devuelva el mismo array "resultado" que envía.
  */
 export async function POST(request: NextRequest) {
+  if (!pagoparEnabled()) return NextResponse.json({ error: "Pagopar no está configurado" }, { status: 503 });
   const body = await request.json().catch(() => null);
   const resultado = body?.resultado;
   const r = Array.isArray(resultado) ? resultado[0] : null;
-  if (!r?.hash_pedido || !r?.token || !tokenValido(r.hash_pedido, r.token)) {
+  if (typeof r?.hash_pedido !== "string" || typeof r?.token !== "string" || !tokenValido(r.hash_pedido, r.token)) {
     return NextResponse.json({ error: "token inválido" }, { status: 400 });
   }
 

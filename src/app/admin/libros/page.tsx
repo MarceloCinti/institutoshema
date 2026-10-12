@@ -6,11 +6,13 @@ import Flash from "@/components/Flash";
 import SubmitButton from "@/components/SubmitButton";
 import { createBook } from "../actions";
 import type { Book } from "@/lib/types";
+import { requireAdmin } from "@/lib/auth";
 
 export const metadata = { title: "Libros" };
 export const dynamic = "force-dynamic";
 
 export default async function LibrosAdmin({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
+  await requireAdmin();
   const sp = await searchParams;
   const db = createAdminClient();
   const [{ data }, { data: sales }] = await Promise.all([

@@ -80,6 +80,10 @@ export async function createBook(formData: FormData) {
 export async function updateBook(formData: FormData) {
   await requireAdmin();
   const id = str(formData, "id");
+  const filePath = optional(formData, "file_path");
+  // Un libro sin archivo no se puede vender: se guarda, pero queda como borrador.
+  const wantsPublished = formData.get("published") === "on";
+  const blocked = wantsPublished && !filePath;
   const { error } = await createAdminClient()
     .from("books")
     .update({
@@ -91,13 +95,18 @@ export async function updateBook(formData: FormData) {
       price_pyg: int(formData, "price_pyg"),
       pages: int(formData, "pages") || null,
       cover_path: optional(formData, "cover_path"),
-      file_path: optional(formData, "file_path"),
-      published: formData.get("published") === "on",
+      file_path: filePath,
+      published: wantsPublished && !blocked,
     })
     .eq("id", id);
   revalidatePath("/libros");
   revalidatePath("/");
-  redirect(`/admin/libros/${id}?${error ? `error=${encodeURIComponent(error.message)}` : "ok=Libro guardado"}`);
+  const msg = error
+    ? `error=${encodeURIComponent(error.message)}`
+    : blocked
+      ? `error=${encodeURIComponent("Guardado como borrador: para publicar el libro primero subí el archivo (PDF o EPUB).")}`
+      : "ok=Libro guardado";
+  redirect(`/admin/libros/${id}?${msg}`);
 }
 
 export async function deleteBook(formData: FormData) {

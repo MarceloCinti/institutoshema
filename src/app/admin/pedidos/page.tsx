@@ -6,6 +6,7 @@ import SubmitButton from "@/components/SubmitButton";
 import GrantAccessForm from "@/components/GrantAccessForm";
 import { approveOrder, rejectOrder } from "../actions";
 import type { Order } from "@/lib/types";
+import { requireAdmin } from "@/lib/auth";
 
 export const metadata = { title: "Pedidos" };
 export const dynamic = "force-dynamic";
@@ -19,6 +20,7 @@ const FILTERS = [
 ];
 
 export default async function PedidosAdmin({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
+  await requireAdmin();
   const sp = await searchParams;
   let q = createAdminClient()
     .from("orders")

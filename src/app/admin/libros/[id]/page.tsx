@@ -7,6 +7,7 @@ import SubmitButton from "@/components/SubmitButton";
 import Cover from "@/components/Cover";
 import { deleteBook, updateBook } from "../../actions";
 import type { Book } from "@/lib/types";
+import { requireAdmin } from "@/lib/auth";
 
 export default async function EditarLibro({
   params,
@@ -15,6 +16,7 @@ export default async function EditarLibro({
   params: Promise<{ id: string }>;
   searchParams: Promise<Record<string, string>>;
 }) {
+  await requireAdmin();
   const { id } = await params;
   const sp = await searchParams;
   const { data: book } = await createAdminClient().from("books").select("*").eq("id", id).maybeSingle<Book>();

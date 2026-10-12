@@ -12,11 +12,15 @@ async function loadItem(type: ItemType, id: string) {
   const db = createAdminClient();
   const { data } = await db
     .from(type === "book" ? "books" : "courses")
-    .select("id, title, slug, price_pyg, cover_path, published")
+    .select(type === "book" ? "id, title, slug, price_pyg, cover_path, published, file_path" : "id, title, slug, price_pyg, cover_path, published")
     .eq("id", id)
     .maybeSingle();
-  if (!data || !data.published) throw new Error("Producto no disponible");
-  return data as { id: string; title: string; slug: string; price_pyg: number; cover_path: string | null };
+  const item = data as { id: string; title: string; slug: string; price_pyg: number; cover_path: string | null; published: boolean; file_path?: string | null } | null;
+  // Un libro sin archivo cargado todavía no se puede comprar.
+  if (!item || !item.published || (type === "book" && !item.file_path)) {
+    redirect(`/${type === "book" ? "libros" : "cursos"}?error=${encodeURIComponent("Producto no disponible por el momento.")}`);
+  }
+  return item;
 }
 
 export async function checkout(formData: FormData) {

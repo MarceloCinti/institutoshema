@@ -1,5 +1,5 @@
 import "server-only";
-import { createHash } from "crypto";
+import { createHash, timingSafeEqual } from "crypto";
 
 /**
  * Integración con Pagopar (pasarela de pagos de Paraguay).
@@ -95,7 +95,11 @@ export async function iniciarTransaccion(params: {
 
 /** Valida el token que envía Pagopar en el webhook: sha1(private_key + hash_pedido). */
 export function tokenValido(hashPedido: string, token: string) {
-  return sha1(process.env.PAGOPAR_PRIVATE_KEY! + hashPedido) === token;
+  const privateKey = process.env.PAGOPAR_PRIVATE_KEY;
+  if (!privateKey || typeof hashPedido !== "string" || typeof token !== "string") return false;
+  const expected = Buffer.from(sha1(privateKey + hashPedido));
+  const received = Buffer.from(token);
+  return expected.length === received.length && timingSafeEqual(expected, received);
 }
 
 /** Consulta el estado real del pedido en Pagopar (no confiar sólo en el webhook). */

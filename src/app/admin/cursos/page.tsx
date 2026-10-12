@@ -6,11 +6,13 @@ import Flash from "@/components/Flash";
 import SubmitButton from "@/components/SubmitButton";
 import { createCourse } from "../actions";
 import type { Course } from "@/lib/types";
+import { requireAdmin } from "@/lib/auth";
 
 export const metadata = { title: "Cursos" };
 export const dynamic = "force-dynamic";
 
 export default async function CursosAdmin({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
+  await requireAdmin();
   const sp = await searchParams;
   const db = createAdminClient();
   const [{ data }, { data: enr }] = await Promise.all([

@@ -31,8 +31,12 @@ export default async function LibroPage({ params }: { params: Promise<{ slug: st
         <p className="mt-6 text-2xl font-bold text-navy-900">{book.price_pyg ? formatPYG(book.price_pyg) : "Gratuito"}</p>
         {owned ? (
           <Link href="/panel/libros" className="btn-primary mt-4">Ya es tuyo — ir a Mis libros</Link>
-        ) : (
+        ) : book.file_path ? (
           <Link href={`/comprar/libro/${book.id}`} className="btn-gold mt-4">Comprar libro</Link>
+        ) : (
+          <p className="mt-4 inline-block rounded-lg bg-gold-50 px-4 py-2 text-sm font-semibold text-gold-700">
+            Disponible muy pronto
+          </p>
         )}
         <div className="mt-8 whitespace-pre-line leading-relaxed text-gray-700">{book.description}</div>
       </div>

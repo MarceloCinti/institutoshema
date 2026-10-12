@@ -24,10 +24,10 @@ export default async function ComprarPage({
   const { profile } = await requireUser();
   const { data: item } = await createAdminClient()
     .from(type === "book" ? "books" : "courses")
-    .select("id, title, subtitle, price_pyg, cover_path, published")
+    .select(type === "book" ? "id, title, subtitle, price_pyg, cover_path, published, file_path" : "id, title, subtitle, price_pyg, cover_path, published")
     .eq("id", id)
-    .maybeSingle();
-  if (!item || !item.published) notFound();
+    .maybeSingle<{ id: string; title: string; subtitle: string | null; price_pyg: number; cover_path: string | null; published: boolean; file_path?: string | null }>();
+  if (!item || !item.published || (type === "book" && !item.file_path)) notFound();
   const free = item.price_pyg === 0;
   const pagopar = pagoparEnabled();
 

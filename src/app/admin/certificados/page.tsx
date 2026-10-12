@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatDate } from "@/lib/format";
+import { requireAdmin } from "@/lib/auth";
 
 export const metadata = { title: "Certificados" };
 export const dynamic = "force-dynamic";
 
 export default async function CertificadosAdmin() {
+  await requireAdmin();
   const { data } = await createAdminClient().from("certificates").select("*").order("issued_at", { ascending: false }).limit(500);
   return (
     <div className="space-y-6">

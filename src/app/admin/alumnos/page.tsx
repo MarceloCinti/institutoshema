@@ -2,11 +2,13 @@ import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatDate } from "@/lib/format";
 import type { Profile } from "@/lib/types";
+import { requireAdmin } from "@/lib/auth";
 
 export const metadata = { title: "Alumnos" };
 export const dynamic = "force-dynamic";
 
 export default async function AlumnosAdmin({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
+  await requireAdmin();
   const { q } = await searchParams;
   const db = createAdminClient();
   let query = db.from("profiles").select("*").order("created_at", { ascending: false }).limit(300);

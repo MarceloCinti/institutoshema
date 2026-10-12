@@ -8,6 +8,7 @@ import SubmitButton from "@/components/SubmitButton";
 import Cover from "@/components/Cover";
 import { deleteCourse, saveModule, updateCourse } from "../../actions";
 import type { Course } from "@/lib/types";
+import { requireAdmin } from "@/lib/auth";
 
 export default async function EditarCurso({
   params,
@@ -16,6 +17,7 @@ export default async function EditarCurso({
   params: Promise<{ id: string }>;
   searchParams: Promise<Record<string, string>>;
 }) {
+  await requireAdmin();
   const { id } = await params;
   const sp = await searchParams;
   const { data: course } = await createAdminClient().from("courses").select("*").eq("id", id).maybeSingle<Course>();

@@ -1,8 +1,10 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { grantAccess } from "@/app/admin/actions";
 import SubmitButton from "@/components/SubmitButton";
+import { requireAdmin } from "@/lib/auth";
 
 export default async function GrantAccessForm({ back, email }: { back: string; email?: string }) {
+  await requireAdmin();
   const db = createAdminClient();
   const [{ data: courses }, { data: books }] = await Promise.all([
     db.from("courses").select("id, title").order("title"),

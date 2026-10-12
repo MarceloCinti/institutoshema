@@ -5,6 +5,7 @@ import Flash from "@/components/Flash";
 import FileUpload from "@/components/FileUpload";
 import SubmitButton from "@/components/SubmitButton";
 import { deleteLesson, updateLesson } from "../../actions";
+import { requireAdmin } from "@/lib/auth";
 
 function toLocalInput(iso: string | null) {
   if (!iso) return "";
@@ -19,6 +20,7 @@ export default async function EditarClase({
   params: Promise<{ lessonId: string }>;
   searchParams: Promise<Record<string, string>>;
 }) {
+  await requireAdmin();
   const { lessonId } = await params;
   const sp = await searchParams;
   const { data: l } = await createAdminClient()

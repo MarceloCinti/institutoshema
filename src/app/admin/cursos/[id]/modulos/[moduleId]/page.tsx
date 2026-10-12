@@ -5,6 +5,7 @@ import { formatDuration } from "@/lib/format";
 import Flash from "@/components/Flash";
 import SubmitButton from "@/components/SubmitButton";
 import { createLesson, deleteModule, deleteQuestion, saveModule, saveQuestion } from "../../../../actions";
+import { requireAdmin } from "@/lib/auth";
 
 const SOURCE: Record<string, string> = { upload: "Video subido", youtube: "YouTube", live: "En vivo" };
 
@@ -36,6 +37,7 @@ export default async function ModuloAdmin({
   params: Promise<{ id: string; moduleId: string }>;
   searchParams: Promise<Record<string, string>>;
 }) {
+  await requireAdmin();
   const { id, moduleId } = await params;
   const sp = await searchParams;
   const db = createAdminClient();

@@ -12,7 +12,11 @@ const GRAY = rgb(0.35, 0.35, 0.35);
 export async function GET(request: NextRequest, { params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;
   const { user, profile } = await getSession();
-  if (!user) return NextResponse.redirect(new URL("/ingresar", request.url));
+  if (!user) {
+    const login = new URL("/ingresar", request.url);
+    login.searchParams.set("next", request.nextUrl.pathname);
+    return NextResponse.redirect(login);
+  }
 
   const db = createAdminClient();
   const { data: cert } = await db.from("certificates").select("*").eq("code", code).maybeSingle();

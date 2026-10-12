@@ -2,10 +2,12 @@ import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatDate, formatPYG, ORDER_STATUS } from "@/lib/format";
 import type { Order } from "@/lib/types";
+import { requireAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminHome() {
+  await requireAdmin();
   const db = createAdminClient();
   const monthStart = new Date();
   monthStart.setDate(1);

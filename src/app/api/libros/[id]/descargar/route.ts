@@ -6,7 +6,11 @@ import { userOwns } from "@/lib/orders";
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { user, profile } = await getSession();
-  if (!user) return NextResponse.redirect(new URL("/ingresar", request.url));
+  if (!user) {
+    const login = new URL("/ingresar", request.url);
+    login.searchParams.set("next", request.nextUrl.pathname);
+    return NextResponse.redirect(login);
+  }
   if (profile?.role !== "admin" && !(await userOwns(user.id, "book", id))) {
     return NextResponse.json({ error: "No compraste este libro" }, { status: 403 });
   }
